@@ -13,6 +13,9 @@ export const maxDuration = 60
 
 const schema = z.object({ submissionId: z.string() })
 
+// Configurable daily limit — set DAILY_GRADE_LIMIT in env to override (0 = unlimited)
+const DAILY_LIMIT = parseInt(process.env.DAILY_GRADE_LIMIT ?? "10")
+
 export async function POST(req: NextRequest) {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
@@ -39,6 +42,28 @@ export async function POST(req: NextRequest) {
   if (submission.status === "GRADED") {
     return NextResponse.json(submission)
   }
+
+  // ── Rate limit: max DAILY_LIMIT new gradings per user per day ──────────────
+  if (DAILY_LIMIT > 0) {
+    const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const gradedToday = await prisma.submission.count({
+      where: {
+        userId: session.user.id,
+        status: "GRADED",
+        gradedAt: { gte: startOfDay },
+      },
+    })
+
+    if (gradedToday >= DAILY_LIMIT) {
+      return NextResponse.json(
+        { error: `Daily limit reached. You can grade up to ${DAILY_LIMIT} FRQs per day. Resets at midnight.` },
+        { status: 429 }
+      )
+    }
+  }
+  // ──────────────────────────────────────────────────────────────────────────
 
   // Mark as grading
   await prisma.submission.update({

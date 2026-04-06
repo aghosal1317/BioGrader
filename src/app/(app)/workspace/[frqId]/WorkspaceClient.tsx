@@ -76,11 +76,15 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
         body: JSON.stringify({ submissionId: submission.id }),
       })
 
-      if (!gradeRes.ok) throw new Error("Grading failed")
+      if (!gradeRes.ok) {
+        const errData = await gradeRes.json().catch(() => ({}))
+        throw new Error(errData?.error ?? "Grading failed")
+      }
       const graded = await gradeRes.json()
       setGradingResult(graded.gradingResult as GradingResultType)
-    } catch {
-      toast.error("Grading failed. Please try again.")
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Grading failed. Please try again."
+      toast.error(message)
     } finally {
       setSubmitting(false)
     }
