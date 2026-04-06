@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Dna } from "lucide-react"
+import Image from "next/image"
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,7 +8,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         href="/"
         className="flex items-center gap-2 font-bold text-xl text-green-700 mb-8"
       >
-        <Dna className="w-6 h-6" />
+        <Image src="/bio-grader-logo.png" alt="BioGrader logo" width={36} height={36} />
         BioGrader
       </Link>
       {children}
