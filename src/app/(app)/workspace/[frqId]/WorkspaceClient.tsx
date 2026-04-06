@@ -98,7 +98,7 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
   return (
     <div className="flex flex-col h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-3 bg-white border-b shrink-0">
+      <div className="flex items-center justify-between px-6 py-3 bg-background border-b border-border shrink-0">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="sm" onClick={() => router.push("/library")}>
             <ArrowLeft className="w-4 h-4 mr-1" />
@@ -106,15 +106,15 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
           </Button>
           <Separator orientation="vertical" className="h-5" />
           <div>
-            <span className="font-semibold text-gray-900">{frq.year} AP Biology</span>
-            <span className="text-gray-400 mx-2">·</span>
-            <span className="text-gray-600">Q{frq.questionNum}</span>
-            <span className="text-gray-400 mx-2">·</span>
-            <span className="text-gray-600">{frq.topic.name}</span>
+            <span className="font-semibold text-foreground">{frq.year} AP Biology</span>
+            <span className="text-muted-foreground mx-2">·</span>
+            <span className="text-muted-foreground">Q{frq.questionNum}</span>
+            <span className="text-muted-foreground mx-2">·</span>
+            <span className="text-muted-foreground">{frq.topic.name}</span>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-sm text-gray-500">
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <Clock className="w-4 h-4" />
             {formatDuration(seconds)}
           </div>
@@ -157,34 +157,34 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Question */}
-        <div className="w-1/2 overflow-y-auto p-6 border-r bg-white">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+        <div className="w-1/2 overflow-y-auto p-6 border-r border-border bg-background">
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
             Question
           </h2>
-          <div className="prose prose-sm max-w-none text-gray-800 whitespace-pre-wrap">
+          <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
             {frq.prompt}
           </div>
         </div>
 
         {/* Right: Answer / Result */}
-        <div className="w-1/2 overflow-y-auto p-6 bg-gray-50">
+        <div className="w-1/2 overflow-y-auto p-6 bg-muted">
           {gradingResult ? (
             <>
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
                 Grading Result
               </h2>
               <GradingResult result={gradingResult} maxScore={frq.totalPoints} />
             </>
           ) : (
             <>
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
                 Your Answer
               </h2>
               {submitting ? (
                 <div className="flex flex-col items-center justify-center h-64 text-center">
                   <Loader2 className="w-10 h-10 animate-spin text-green-600 mb-3" />
-                  <p className="font-medium text-gray-700">Grading your answer...</p>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <p className="font-medium text-foreground">Grading your answer...</p>
+                  <p className="text-sm text-muted-foreground mt-1">
                     Claude is reviewing your response against the rubric
                   </p>
                 </div>

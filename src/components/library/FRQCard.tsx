@@ -19,9 +19,9 @@ interface FRQCardProps {
 }
 
 const difficultyConfig = {
-  EASY: { label: "Easy", className: "bg-green-100 text-green-700" },
-  MEDIUM: { label: "Medium", className: "bg-yellow-100 text-yellow-700" },
-  HARD: { label: "Hard", className: "bg-red-100 text-red-700" },
+  EASY: { label: "Easy", className: "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400" },
+  MEDIUM: { label: "Medium", className: "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-400" },
+  HARD: { label: "Hard", className: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400" },
 }
 
 export function FRQCard({
@@ -47,9 +47,9 @@ export function FRQCard({
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="w-3.5 h-3.5 text-gray-400" />
-                <span className="text-xs text-gray-500 font-medium">{year} · Q{questionNum}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{year} · Q{questionNum}</span>
               </div>
-              <h3 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors line-clamp-2">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors line-clamp-2">
                 {topic.name}
               </h3>
             </div>
@@ -58,7 +58,7 @@ export function FRQCard({
         </CardHeader>
         <CardContent className="pb-2">
           {summary && (
-            <p className="text-sm text-gray-500 line-clamp-3">{summary}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3">{summary}</p>
           )}
         </CardContent>
         <CardFooter className="pt-2 border-t">

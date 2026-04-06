@@ -13,11 +13,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-background">
       <Sidebar role={session.user.role} />
       <div className="flex-1 flex flex-col overflow-auto">
         <main className="flex-1">{children}</main>
-        <footer className="text-center py-3 text-xs text-gray-400 border-t border-gray-200">
+        <footer className="text-center py-3 text-xs text-muted-foreground border-t border-border">
           Made by Aneesh Ghosal
         </footer>
       </div>

@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
+import { useTheme } from "next-themes"
 import { cn } from "@/lib/utils"
 import {
   LayoutDashboard,
@@ -14,6 +15,8 @@ import {
   Users,
   Brain,
   PlusCircle,
+  Sun,
+  Moon,
 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
@@ -43,6 +46,7 @@ interface SidebarProps {
 export function Sidebar({ role }: SidebarProps) {
   const pathname = usePathname()
   const { data: session } = useSession()
+  const { resolvedTheme, setTheme } = useTheme()
 
   const navItems = role === "TEACHER" ? teacherNavItems : studentNavItems
 
@@ -101,6 +105,17 @@ export function Sidebar({ role }: SidebarProps) {
             <p className="text-xs text-gray-500 truncate">{session?.user?.email}</p>
           </div>
         </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="w-full justify-start text-gray-500 hover:text-white hover:bg-gray-800"
+          onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+        >
+          {resolvedTheme === "dark"
+            ? <><Sun className="w-4 h-4 mr-2" />Light mode</>
+            : <><Moon className="w-4 h-4 mr-2" />Dark mode</>
+          }
+        </Button>
         <Button
           variant="ghost"
           size="sm"

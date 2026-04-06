@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Enable dark: variants when .dark class is on <html> */
+@variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
@@ -17,6 +20,28 @@
   --input: #e4e4e7;
   --ring: #16a34a;
   --radius: 0.5rem;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+}
+
+.dark {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card: #1e293b;
+  --card-foreground: #f1f5f9;
+  --primary: #22c55e;
+  --primary-foreground: #052e16;
+  --secondary: #1e3a2f;
+  --secondary-foreground: #86efac;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #14532d;
+  --accent-foreground: #dcfce7;
+  --border: #334155;
+  --input: #334155;
+  --ring: #22c55e;
+  --popover: #1e293b;
+  --popover-foreground: #f1f5f9;
 }
 
 @theme inline {
@@ -31,8 +56,11 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
+  --color-input: var(--input);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   --radius-sm: calc(var(--radius) - 2px);
   --radius-md: var(--radius);
   --radius-lg: calc(var(--radius) + 2px);

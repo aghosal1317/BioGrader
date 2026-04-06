@@ -32,6 +32,65 @@ A year ago I built a personal script to grade my own FRQs using an AI model. It 
 | UI | Tailwind CSS v4, Radix UI, shadcn/ui |
 | Hosting | Vercel |
 
+## File Structure
+
+```
+src/
+├── app/
+│   ├── (app)/                        # Authenticated app pages
+│   │   ├── dashboard/                # Dashboard + charts
+│   │   ├── library/                  # FRQ browse + filters
+│   │   ├── workspace/[frqId]/        # FRQ writing + grading view
+│   │   ├── mcq/                      # MCQ practice (unit select + quiz)
+│   │   ├── progress/                 # Score trends + unit breakdown
+│   │   ├── profile/                  # User settings
+│   │   ├── teacher/                  # Teacher student roster + detail views
+│   │   └── admin/                    # Import FRQ/MCQ questions
+│   ├── (auth)/                       # Unauthenticated pages
+│   │   ├── login/
+│   │   ├── register/
+│   │   ├── forgot-password/
+│   │   ├── reset-password/
+│   │   └── change-password/
+│   ├── api/
+│   │   ├── auth/                     # NextAuth + registration
+│   │   ├── grade/                    # Claude grading endpoint (rate limited)
+│   │   ├── frqs/                     # FRQ fetch
+│   │   ├── submissions/              # Submission create/fetch
+│   │   ├── mcq/attempt/              # Save MCQ attempt
+│   │   ├── drafts/                   # Auto-save drafts
+│   │   ├── profile/                  # Update user profile
+│   │   ├── admin/frq|mcq/            # Import questions (teacher/admin only)
+│   │   ├── teacher/                  # Student management
+│   │   └── password-reset/           # Request + confirm reset
+│   ├── globals.css                   # Tailwind v4 + light/dark CSS variables
+│   ├── layout.tsx                    # Root layout + Analytics
+│   └── providers.tsx                 # SessionProvider + ThemeProvider
+├── components/
+│   ├── layout/Sidebar.tsx            # Nav + dark mode toggle
+│   ├── workspace/                    # AnswerEditor (Tiptap) + GradingResult
+│   ├── library/                      # FRQCard + FRQFilters
+│   ├── mcq/MCQQuiz.tsx               # MCQ quiz UI
+│   ├── admin/                        # FRQ + MCQ import forms
+│   ├── auth/                         # Login, register, reset forms
+│   └── ui/                           # shadcn/ui components
+├── lib/
+│   ├── grading/                      # Claude prompt + response parser
+│   ├── email/mailer.ts               # Nodemailer password reset
+│   ├── stats/updateUserStats.ts      # Score aggregation
+│   ├── anthropic.ts                  # Anthropic client
+│   ├── auth.ts                       # NextAuth config
+│   ├── prisma.ts                     # Prisma singleton
+│   └── utils.ts
+├── hooks/
+│   ├── useAutoSave.ts                # Debounced draft saving
+│   └── useTimer.ts                   # Time-spent tracker
+├── types/                            # TypeScript types (grading, rubric, next-auth)
+prisma/
+├── schema.prisma                     # DB schema
+└── seed.ts                           # 13 FRQs + 64 MCQs across 8 units
+```
+
 ## Running Locally
 
 1. Clone the repo and install dependencies:
