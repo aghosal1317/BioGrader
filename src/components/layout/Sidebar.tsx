@@ -9,12 +9,12 @@ import {
   BookOpen,
   BarChart3,
   Settings,
+  Dna,
   LogOut,
   Users,
   Brain,
   PlusCircle,
 } from "lucide-react"
-import Image from "next/image"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -50,7 +50,9 @@ export function Sidebar({ role }: SidebarProps) {
     <aside className="hidden md:flex flex-col w-60 min-h-screen bg-gray-950 text-white border-r border-gray-800">
       {/* Logo */}
       <div className="flex items-center gap-2 px-6 py-5 border-b border-gray-800">
-        <Image src="/bio-grader-logo.png" alt="BioGrader logo" width={32} height={32} className="rounded" />
+        <div className="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center">
+          <Dna className="w-5 h-5 text-white" />
+        </div>
         <span className="font-bold text-lg text-white">BioGrader</span>
       </div>
 
