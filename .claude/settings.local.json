@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm show:*)",
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Read(//c/Users/aghos/OneDrive/Documents/Code/**)",
+      "Bash(npx create-next-app@latest biograder-temp --typescript --tailwind --app --src-dir --import-alias \"@/*\" --no-git --yes)",
+      "Bash(cp -r /c/Users/aghos/OneDrive/Documents/Code/biograder-temp/. /c/Users/aghos/OneDrive/Documents/Code/BioGrader/)",
+      "Bash(rm -rf /c/Users/aghos/OneDrive/Documents/Code/biograder-temp)",
+      "Bash(rsync -a /c/Users/aghos/OneDrive/Documents/Code/biograder-temp/ /c/Users/aghos/OneDrive/Documents/Code/BioGrader/)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init --yes)",
+      "Bash(npx shadcn@latest add button card input label badge select skeleton toast dialog dropdown-menu avatar progress --yes)",
+      "Bash(npx shadcn@latest add sonner separator tabs --yes)",
+      "Bash(mkdir -p \"/c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/\\(app\\)/library/[frqId]\")",
+      "Bash(mkdir -p \"/c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/\\(app\\)/workspace/[frqId]\")",
+      "Bash(mkdir -p /c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/api/auth/[...nextauth])",
+      "Bash(mkdir -p \"/c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/api/frqs/[frqId]\")",
+      "Bash(mkdir -p \"/c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/api/drafts/[frqId]\")",
+      "Bash(npx prisma:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx shadcn@latest add button card input label badge select skeleton avatar progress dialog separator --yes)",
+      "Bash(node -e \"const p = require\\(''prisma/config''\\); console.log\\(typeof p.defineConfig\\)\")",
+      "Bash(node -e \"console.log\\(require\\(''crypto''\\).randomBytes\\(32\\).toString\\(''base64''\\)\\)\")",
+      "Bash(npx dotenv:*)",
+      "Bash(npx dotenv-cli:*)",
+      "Bash(npm run:*)",
+      "Bash(mkdir -p \"/c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/api/teacher/students/[studentId]\")",
+      "Bash(mkdir -p \"/c/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/\\(app\\)/teacher/students/[studentId]\")",
+      "Bash(node -e \"const {PrismaClient}=require\\(''@prisma/client''\\); const p=new PrismaClient\\(\\); console.log\\(Object.keys\\(p\\).filter\\(k=>!k.startsWith\\(''_''\\) && !k.startsWith\\(''$''\\)\\)\\)\")",
+      "Bash(node -e \"const p = require\\(''./node_modules/@prisma/client''\\); const c = new p.PrismaClient\\(\\); console.log\\(typeof c.mCQ, typeof c.fRQ, typeof c.topic\\)\")",
+      "Bash(xargs grep:*)",
+      "Bash(find C:/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/api -name *.ts)"
+    ]
+  }
+}
