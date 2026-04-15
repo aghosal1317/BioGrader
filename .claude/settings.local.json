@@ -32,7 +32,8 @@
       "Bash(node -e \"const p = require\\(''./node_modules/@prisma/client''\\); const c = new p.PrismaClient\\(\\); console.log\\(typeof c.mCQ, typeof c.fRQ, typeof c.topic\\)\")",
       "Bash(xargs grep:*)",
       "Bash(find C:/Users/aghos/OneDrive/Documents/Code/BioGrader/src/app/api -name *.ts)",
-      "Bash(ls \"C:\\\\Users\\\\aghos\\\\OneDrive\\\\Documents\\\\Code\\\\BioGrader\\\\src\\\\app\\\\\\(auth\\)\")"
+      "Bash(ls \"C:\\\\Users\\\\aghos\\\\OneDrive\\\\Documents\\\\Code\\\\BioGrader\\\\src\\\\app\\\\\\(auth\\)\")",
+      "Bash(heroku --version)"
     ]
   }
 }
