@@ -62,6 +62,15 @@ export default function LandingPage() {
           </div>
         ))}
       </section>
+
+      <footer className="text-center py-4 px-6 text-xs text-gray-400 border-t bg-white/60">
+        <p className="mb-0.5">Made by Aneesh Ghosal</p>
+        <p>
+          AP® Biology Free-Response Questions © College Board. All rights reserved.
+          AP® is a registered trademark of College Board. BioGrader is not affiliated with or endorsed by College Board.
+          Content used for educational purposes only.
+        </p>
+      </footer>
     </main>
   )
 }

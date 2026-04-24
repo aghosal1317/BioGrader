@@ -69,6 +69,7 @@ async function FRQList({ searchParams }: PageProps) {
             difficulty={frq.difficulty}
             summary={frq.summary}
             topic={frq.topic}
+            isOfficial={frq.isOfficial}
             lastSubmission={submissionMap.get(frq.id) ?? null}
           />
         ))}

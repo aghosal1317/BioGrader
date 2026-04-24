@@ -2,7 +2,7 @@ import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { formatDate } from "@/lib/utils"
-import { Calendar, Clock, Star } from "lucide-react"
+import { Calendar, Clock, Star, ShieldCheck } from "lucide-react"
 
 interface FRQCardProps {
   id: string
@@ -11,6 +11,7 @@ interface FRQCardProps {
   difficulty: "EASY" | "MEDIUM" | "HARD"
   summary?: string | null
   topic: { name: string }
+  isOfficial?: boolean
   lastSubmission?: {
     totalScore: number | null
     maxScore: number | null
@@ -31,6 +32,7 @@ export function FRQCard({
   difficulty,
   summary,
   topic,
+  isOfficial,
   lastSubmission,
 }: FRQCardProps) {
   const diff = difficultyConfig[difficulty]
@@ -48,6 +50,12 @@ export function FRQCard({
               <div className="flex items-center gap-2 mb-1">
                 <Calendar className="w-3.5 h-3.5 text-gray-400" />
                 <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">{year} · Q{questionNum}</span>
+                {isOfficial && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium text-blue-600 dark:text-blue-400">
+                    <ShieldCheck className="w-3 h-3" />
+                    Official
+                  </span>
+                )}
               </div>
               <h3 className="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-green-700 dark:group-hover:text-green-400 transition-colors line-clamp-2">
                 {topic.name}

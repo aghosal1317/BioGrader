@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { AnswerEditor } from "@/components/workspace/AnswerEditor"
 import { GradingResult } from "@/components/workspace/GradingResult"
 import { Button } from "@/components/ui/button"
@@ -12,7 +13,7 @@ import { useTimer } from "@/hooks/useTimer"
 import { formatDuration } from "@/lib/utils"
 import { GradingResult as GradingResultType } from "@/types/grading"
 import { toast } from "sonner"
-import { ArrowLeft, Clock, Save, Send, Loader2, RotateCcw } from "lucide-react"
+import { ArrowLeft, Clock, Save, Send, Loader2, RotateCcw, ShieldCheck } from "lucide-react"
 
 interface WorkspaceClientProps {
   frq: {
@@ -23,6 +24,9 @@ interface WorkspaceClientProps {
     totalPoints: number
     topic: { name: string }
     rubric: unknown
+    imageUrls: string[]
+    isOfficial: boolean
+    source: string | null
   }
   initialDraft: unknown
 }
@@ -164,6 +168,44 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
           <div className="prose prose-sm max-w-none text-foreground whitespace-pre-wrap">
             {frq.prompt}
           </div>
+
+          {/* Figures */}
+          {frq.imageUrls.length > 0 && (
+            <div className="mt-6 space-y-4">
+              {frq.imageUrls.map((url, i) => (
+                <figure key={url} className="border rounded-lg overflow-hidden bg-white">
+                  <Image
+                    src={url}
+                    alt={`Figure ${i + 1} for ${frq.year} AP Biology Q${frq.questionNum}`}
+                    width={1100}
+                    height={900}
+                    className="w-full h-auto object-contain"
+                    unoptimized
+                  />
+                  <figcaption className="px-3 py-1.5 text-[11px] text-gray-500 bg-gray-50 border-t text-center">
+                    Figure {i + 1}
+                    {frq.isOfficial && (
+                      <> · © {frq.year} College Board. All rights reserved.</>
+                    )}
+                  </figcaption>
+                </figure>
+              ))}
+            </div>
+          )}
+
+          {/* Copyright notice for official questions */}
+          {frq.isOfficial && (
+            <div className="mt-6 flex items-start gap-2 p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-300">
+              <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
+              <div>
+                <span className="font-semibold">Official College Board Question</span>
+                <br />
+                AP® Biology Free-Response Questions © {frq.year} College Board. All rights reserved.
+                AP® is a registered trademark of College Board. Used for educational purposes only.
+                {frq.source && <><br /><span className="opacity-75">{frq.source}</span></>}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right: Answer / Result */}

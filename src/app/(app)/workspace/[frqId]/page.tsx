@@ -36,6 +36,9 @@ export default async function WorkspacePage({ params }: PageProps) {
         totalPoints: frq.totalPoints,
         topic: frq.topic,
         rubric: frq.rubric,
+        imageUrls: frq.imageUrls,
+        isOfficial: frq.isOfficial,
+        source: frq.source,
       }}
       initialDraft={draft?.content ?? null}
     />
