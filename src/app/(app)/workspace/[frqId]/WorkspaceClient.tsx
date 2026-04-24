@@ -8,12 +8,28 @@ import { GradingResult } from "@/components/workspace/GradingResult"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { useAutoSave } from "@/hooks/useAutoSave"
 import { useTimer } from "@/hooks/useTimer"
 import { formatDuration } from "@/lib/utils"
 import { GradingResult as GradingResultType } from "@/types/grading"
 import { toast } from "sonner"
-import { ArrowLeft, Clock, Save, Send, Loader2, RotateCcw, ShieldCheck } from "lucide-react"
+import { ArrowLeft, Clock, Save, Send, Loader2, RotateCcw, ShieldCheck, History, ChevronDown, ChevronUp } from "lucide-react"
+
+interface PastSubmission {
+  id: string
+  totalScore: number | null
+  maxScore: number | null
+  gradingResult: unknown
+  answerText: string
+  submittedAt: string
+  timeSpentSec: number
+}
 
 interface WorkspaceClientProps {
   frq: {
@@ -39,6 +55,14 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
   const [submitting, setSubmitting] = useState(false)
   const [gradingResult, setGradingResult] = useState<GradingResultType | null>(null)
   const [submissionId, setSubmissionId] = useState<string | null>(null)
+  // Incrementing this key remounts AnswerEditor with blank content on retry
+  const [editorKey, setEditorKey] = useState(0)
+
+  // Past answers panel
+  const [pastOpen, setPastOpen] = useState(false)
+  const [pastSubmissions, setPastSubmissions] = useState<PastSubmission[]>([])
+  const [loadingPast, setLoadingPast] = useState(false)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
   const { seconds, resetIdle } = useTimer()
   useAutoSave(frq.id, content, 3000)
@@ -86,6 +110,9 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
       }
       const graded = await gradeRes.json()
       setGradingResult(graded.gradingResult as GradingResultType)
+
+      // 3. Clear draft so editor starts blank next visit
+      fetch(`/api/drafts/${frq.id}`, { method: "DELETE" }).catch(() => null)
     } catch (err) {
       const message = err instanceof Error ? err.message : "Grading failed. Please try again."
       toast.error(message)
@@ -97,7 +124,24 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
   const handleRetry = () => {
     setGradingResult(null)
     setSubmissionId(null)
+    setContent(null)
+    setEditorKey((k) => k + 1) // remount editor blank
   }
+
+  const openPastAnswers = useCallback(async () => {
+    setPastOpen(true)
+    if (pastSubmissions.length > 0) return // already loaded
+    setLoadingPast(true)
+    try {
+      const res = await fetch(`/api/submissions?frqId=${frq.id}`)
+      const data = await res.json()
+      setPastSubmissions(data)
+    } catch {
+      toast.error("Could not load past answers")
+    } finally {
+      setLoadingPast(false)
+    }
+  }, [frq.id, pastSubmissions.length])
 
   return (
     <div className="flex flex-col h-screen">
@@ -123,6 +167,10 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
             {formatDuration(seconds)}
           </div>
           <Badge variant="outline">{frq.totalPoints} pts</Badge>
+          <Button variant="outline" size="sm" onClick={openPastAnswers}>
+            <History className="w-4 h-4 mr-1" />
+            Past answers
+          </Button>
           {!gradingResult && (
             <>
               <Button variant="outline" size="sm" onClick={handleSaveDraft} disabled={submitting}>
@@ -232,6 +280,7 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
                 </div>
               ) : (
                 <AnswerEditor
+                  key={editorKey}
                   initialContent={content}
                   onChange={setContent}
                   onActivity={resetIdle}
@@ -242,6 +291,101 @@ export function WorkspaceClient({ frq, initialDraft }: WorkspaceClientProps) {
           )}
         </div>
       </div>
+
+      {/* Past Answers Dialog */}
+      <Dialog open={pastOpen} onOpenChange={setPastOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Past Answers — {frq.year} AP Bio Q{frq.questionNum}</DialogTitle>
+          </DialogHeader>
+
+          <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+            {loadingPast && (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+              </div>
+            )}
+
+            {!loadingPast && pastSubmissions.length === 0 && (
+              <p className="text-center text-muted-foreground py-12 text-sm">
+                No graded submissions yet for this question.
+              </p>
+            )}
+
+            {!loadingPast && pastSubmissions.map((sub, i) => {
+              const pct = sub.totalScore != null && sub.maxScore
+                ? Math.round((sub.totalScore / sub.maxScore) * 100)
+                : null
+              const scoreColor =
+                pct == null ? "text-gray-500"
+                : pct >= 70 ? "text-green-600"
+                : pct >= 50 ? "text-yellow-600"
+                : "text-red-600"
+              const isExpanded = expandedId === sub.id
+              const date = new Date(sub.submittedAt).toLocaleDateString("en-US", {
+                month: "short", day: "numeric", year: "numeric",
+              })
+              const attemptNum = pastSubmissions.length - i
+
+              return (
+                <div key={sub.id} className="border rounded-lg bg-background overflow-hidden">
+                  {/* Row header — click to expand */}
+                  <button
+                    className="w-full flex items-center justify-between px-4 py-3 hover:bg-muted/50 transition-colors text-left"
+                    onClick={() => setExpandedId(isExpanded ? null : sub.id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-medium text-muted-foreground">
+                        Attempt {attemptNum}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{date}</span>
+                      <span className="text-xs text-muted-foreground">
+                        {formatDuration(sub.timeSpentSec)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {pct != null && (
+                        <span className={`text-sm font-bold ${scoreColor}`}>
+                          {sub.totalScore}/{sub.maxScore} pts ({pct}%)
+                        </span>
+                      )}
+                      {isExpanded
+                        ? <ChevronUp className="w-4 h-4 text-muted-foreground" />
+                        : <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                      }
+                    </div>
+                  </button>
+
+                  {/* Expanded grading details */}
+                  {isExpanded && (
+                    <div className="px-4 pb-4 border-t bg-muted/30 space-y-4">
+                      {/* Written answer */}
+                      <div className="pt-3">
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+                          Your answer
+                        </p>
+                        <p className="text-sm text-foreground whitespace-pre-wrap bg-background border rounded p-3">
+                          {sub.answerText}
+                        </p>
+                      </div>
+                      {/* Grading result */}
+                      {sub.gradingResult != null && (
+                        <GradingResult
+                          result={sub.gradingResult as GradingResultType}
+                          maxScore={frq.totalPoints}
+                        />
+                      )}
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* used only to trigger grading flow */}
+      <span data-submission-id={submissionId ?? ""} className="hidden" />
     </div>
   )
 }
