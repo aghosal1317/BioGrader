@@ -193,6 +193,7 @@ model Submission {
 
   answerContent Json
   answerText    String @db.Text
+  imageUrl      String? @db.Text
 
   status       SubmissionStatus @default(PENDING)
   totalScore   Int?

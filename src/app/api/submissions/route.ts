@@ -9,6 +9,7 @@ const schema = z.object({
   frqId: z.string(),
   content: z.record(z.string(), z.unknown()),
   timeSpentSec: z.number().int().min(0),
+  imageUrl: z.string().url().optional(),
 })
 
 export async function GET(req: NextRequest) {
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid request" }, { status: 400 })
   }
 
-  const { frqId, content, timeSpentSec } = parsed.data
+  const { frqId, content, timeSpentSec, imageUrl } = parsed.data
   const answerText = tiptapToPlainText(content as Record<string, unknown>)
 
   const submission = await prisma.submission.create({
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest) {
       answerContent: content as object,
       answerText,
       timeSpentSec,
+      imageUrl,
       status: "PENDING",
     },
   })
