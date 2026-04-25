@@ -8,7 +8,7 @@ export async function GET() {
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const [stats, recentSubmissions, allTopics] = await Promise.all([
+  const [stats, recentSubmissions, allTopics, mcqByUnit] = await Promise.all([
     prisma.userStats.findUnique({ where: { userId: session.user.id } }),
     prisma.submission.findMany({
       where: {
@@ -20,6 +20,10 @@ export async function GET() {
       orderBy: { submittedAt: "asc" },
     }),
     prisma.topic.findMany({ orderBy: { apUnit: "asc" } }),
+    prisma.mCQAttempt.findMany({
+      where: { userId: session.user.id },
+      select: { unit: true, correct: true },
+    }),
   ])
 
   // Build score-over-time series (weekly buckets)
@@ -39,9 +43,18 @@ export async function GET() {
     avgScore: Math.round(total / count),
   }))
 
+  // Aggregate MCQ attempts by unit
+  const mcqStats: Record<number, { attempts: number; correct: number }> = {}
+  for (const attempt of mcqByUnit) {
+    if (!mcqStats[attempt.unit]) mcqStats[attempt.unit] = { attempts: 0, correct: 0 }
+    mcqStats[attempt.unit].attempts++
+    if (attempt.correct) mcqStats[attempt.unit].correct++
+  }
+
   return NextResponse.json({
     stats,
     scoreOverTime,
+    mcqStats,
     recentSubmissions: recentSubmissions.slice(-10).map((s) => ({
       id: s.id,
       frqYear: s.frq.year,
